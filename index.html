@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="theme-color" content="#EBD4CC" />
+<title>로테이션 소개팅 프로필 카드</title>
+
+<!-- Pretendard -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+
+<!-- html-to-image (PNG 다운로드용) -->
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+
+<style>
+  :root {
+    --quartz:    #514945;
+    --cordovan:  #894242;
+    --indianRed: #D55C5A;
+    --tulip:     #F5918F;
+    --almond:    #EBD4CC;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system,
+                 BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+                 'Noto Sans KR', sans-serif;
+    background: linear-gradient(180deg, #f7e9e3 0%, #efd9cf 100%);
+    color: var(--quartz);
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  /* 모바일 앱 프레임 */
+  .frame {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    background: rgba(235, 212, 204, 0.4);
+    box-shadow: 0 24px 80px -20px rgba(137, 66, 66, 0.25);
+    position: relative;
+    /* sticky CTA(약 80px) + 안내 문구 + 호흡 공간까지 확보 */
+    padding-bottom: calc(180px + env(safe-area-inset-bottom));
+  }
+
+  /* 헤더 */
+  .header {
+    position: sticky; top: 0; z-index: 20;
+    padding: 24px 20px 16px;
+    background: rgba(235, 212, 204, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(137, 66, 66, 0.1);
+  }
+  .header .kicker {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(137, 66, 66, 0.7);
+    font-weight: 700;
+    margin: 0;
+  }
+  .header h1 {
+    font-size: 22px; font-weight: 800;
+    color: var(--quartz);
+    margin: 6px 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .header .sub {
+    font-size: 13px;
+    color: rgba(81, 73, 69, 0.7);
+    margin: 0;
+  }
+
+  /* 필드 */
+  .section { padding: 24px 20px; }
+  .field { margin-bottom: 24px; }
+  .field-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .field-label { font-size: 13px; font-weight: 700; color: var(--quartz); }
+  .field-hint { font-size: 11px; color: rgba(81, 73, 69, 0.5); }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(137, 66, 66, 0.1);
+    color: var(--quartz);
+    font-size: 16px; /* iOS zoom 방지 */
+    font-family: inherit;
+    outline: none;
+    transition: box-shadow .15s, border-color .15s;
+  }
+  input[type="text"]::placeholder { color: rgba(81, 73, 69, 0.4); }
+  input[type="text"]:focus {
+    border-color: var(--indianRed);
+    box-shadow: 0 0 0 3px rgba(213, 92, 90, 0.2);
+  }
+  .char-count { font-size: 11px; color: rgba(81, 73, 69, 0.4); text-align: right; margin-top: 4px; }
+
+  /* 동물 그리드 */
+  .animal-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+  .animal-btn {
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .15s, background .15s, box-shadow .15s;
+  }
+  .animal-btn:hover { background: #fff; }
+  .animal-btn.selected {
+    background: var(--indianRed);
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px -8px rgba(213, 92, 90, 0.6);
+  }
+
+  /* 가치관 pill */
+  .values-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .value-btn {
+    position: relative;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(137, 66, 66, 0.15);
+    color: var(--quartz);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .value-btn:hover { background: #fff; }
+  .value-btn.selected {
+    color: #fff;
+    border-color: var(--tulip);
+    background: var(--tulip);
+    box-shadow: 0 6px 16px -6px rgba(245, 145, 143, 0.6);
+  }
+  .value-btn.rank-1 {
+    background: var(--indianRed);
+    border-color: var(--indianRed);
+    box-shadow: 0 8px 18px -6px rgba(213, 92, 90, 0.6);
+  }
+  .rank-badge {
+    position: absolute; top: -8px; right: -8px;
+    background: var(--cordovan); color: #fff;
+    width: 20px; height: 20px;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  .value-count { font-size: 11px; color: rgba(81, 73, 69, 0.5); margin-top: 8px; }
+
+  /* 구분 라벨 */
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 4px 20px;
+  }
+  .divider .line { flex: 1; height: 1px; background: rgba(137, 66, 66, 0.15); }
+  .divider .tag {
+    font-size: 11px; letter-spacing: 0.2em;
+    color: rgba(137, 66, 66, 0.7); font-weight: 700;
+  }
+
+  /* 미리보기 카드 */
+  .card-wrap { padding: 0 20px 60px; }
+  .card {
+    border-radius: 28px;
+    background: #ffffff;
+    border: 1px solid var(--almond);
+    box-shadow: 0 20px 50px -20px rgba(137, 66, 66, 0.35);
+    padding: 28px 24px;
+    overflow: hidden; /* 둥근 모서리 안에서 콘텐츠 깔끔하게 정리 */
+    /* 한글이 음절이 아니라 단어 단위로 줄바꿈되도록 */
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    animation: floatIn .35s ease-out both;
+  }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card-top { text-align: center; }
+  .card-animal { font-size: 64px; line-height: 1; margin-bottom: 8px; user-select: none; }
+  .card-nickname {
+    font-size: 22px; font-weight: 800;
+    color: var(--quartz); letter-spacing: -0.01em;
+  }
+  .card-intro {
+    margin-top: 8px;
+    font-size: 14px; font-style: italic;
+    color: var(--cordovan);
+    padding: 0 8px; line-height: 1.5;
+  }
+  .card-section {
+    margin-top: 22px; padding-top: 20px;
+    border-top: 1px solid var(--almond);
+  }
+  .card-section-label {
+    font-size: 11px; letter-spacing: 0.18em;
+    color: rgba(137, 66, 66, 0.8); font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .values-list { list-style: none; padding: 0; margin: 0; }
+  .values-list li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 0; font-size: 15px;
+  }
+  .values-list .medal { font-size: 20px; flex-shrink: 0; }
+  .values-list .rank-text {
+    color: rgba(81, 73, 69, 0.6);
+    font-size: 13px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .values-list .value-text {
+    font-weight: 700;
+    color: var(--quartz);
+    flex: 1;
+    min-width: 0;
+    word-break: keep-all;
+  }
+  .empty-hint { font-size: 13px; color: rgba(81, 73, 69, 0.4); }
+  .row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 4px 0; font-size: 14px;
+  }
+  .row .row-label { color: rgba(81, 73, 69, 0.55); width: 88px; flex-shrink: 0; font-size: 13px; }
+  .row .row-value {
+    flex: 1; min-width: 0;
+    color: var(--quartz); font-weight: 600;
+    word-break: keep-all;
+  }
+  .row .row-value.empty { color: rgba(81, 73, 69, 0.35); font-weight: 400; }
+  /* TMI 영역 */
+  .tmi-area {
+    margin-top: 18px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: rgba(245, 145, 143, 0.12);
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .tmi-tag {
+    flex-shrink: 0;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 0.18em;
+    color: var(--cordovan);
+    background: #fff;
+    padding: 3px 8px;
+    border-radius: 999px;
+    line-height: 1;
+    margin-top: 1px;
+  }
+  .tmi-text {
+    font-size: 12.5px;
+    color: var(--quartz);
+    line-height: 1.5;
+    flex: 1;
+    word-break: keep-all;
+  }
+
+  .card-foot {
+    margin-top: 22px; padding-top: 16px;
+    border-top: 1px solid var(--almond);
+    text-align: center;
+  }
+  .card-foot p {
+    margin: 0; font-size: 10px;
+    letter-spacing: 0.25em;
+    color: rgba(137, 66, 66, 0.6);
+    font-weight: 700;
+  }
+  .card-helper {
+    font-size: 11px;
+    color: rgba(81, 73, 69, 0.5);
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  /* CTA */
+  .cta-wrap {
+    position: fixed; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%; max-width: 430px;
+    padding: 10px 16px max(16px, env(safe-area-inset-bottom));
+    background: rgba(235, 212, 204, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(137, 66, 66, 0.1);
+    z-index: 30;
+  }
+  .cta-helper {
+    margin: 0 0 8px;
+    font-size: 11px;
+    color: rgba(81, 73, 69, 0.65);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .cta-btn {
+    width: 100%;
+    padding: 16px 0;
+    border: none; border-radius: 16px;
+    background: var(--indianRed);
+    color: #fff; font-weight: 800; font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 12px 30px -10px rgba(213, 92, 90, 0.6);
+    transition: transform .12s, opacity .12s;
+  }
+  .cta-btn:active { transform: scale(0.98); }
+  .cta-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 110px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--quartz);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 40;
+    animation: toastUp .25s ease-out both;
+  }
+  @keyframes toastUp {
+    from { opacity: 0; transform: translate(-50%, 12px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  /* 작은 부드러운 효과 */
+  button { font-family: inherit; }
+</style>
+</head>
+<body>
+  <main class="frame">
+    <!-- Header -->
+    <header class="header">
+      <p class="kicker">ROTATION DATE</p>
+      <h1>나를 한 장에 담는 소개팅 카드</h1>
+      <p class="sub">소개팅 자리에서 보여줄 수 있는 프로필 카드를 만들어요</p>
+    </header>
+
+    <!-- Form -->
+    <section class="section">
+      <!-- 1. Animal -->
+      <div class="field">
+        <div class="field-head">
+          <span class="field-label">나를 나타내는 동물</span>
+          <span class="field-hint">가장 닮은 동물을 골라주세요</span>
+        </div>
+        <div class="animal-grid" id="animal-grid"></div>
+      </div>
+
+      <!-- 2. Nickname -->
+      <div class="field">
+        <div class="field-head">
+          <span class="field-label">닉네임</span>
+          <span class="field-hint">소개팅에서 사용할 이름</span>
+        </div>
+        <input type="text" id="nickname" maxlength="12" placeholder="예: 감자왕자, 햇살토끼" />
+        <div class="char-count"><span id="nickname-count">0</span> / 12</div>
+      </div>
+
+      <!-- 3. Top 3 values -->
+      <div class="field">
+        <div class="field-head">
+          <span class="field-label">가치관 TOP 3</span>
+          <span class="field-hint">선택한 순서대로 1·2·3순위 (3개 필수)</span>
+        </div>
+        <div class="values-row" id="values-row"></div>
+        <div class="value-count"><span id="value-count">0</span> / 3 선택됨</div>
+      </div>
+
+      <!-- 4. MBTI -->
+      <div class="field">
+        <div class="field-head"><span class="field-label">MBTI · 성격</span></div>
+        <input type="text" id="mbti" placeholder="예: ENFP / 처음엔 낯가리지만 금방 친해짐" />
+      </div>
+
+      <!-- 5. Intro -->
+      <div class="field">
+        <div class="field-head"><span class="field-label">나를 소개하는 한 문장</span></div>
+        <input type="text" id="intro" placeholder="예: 웃긴데 은근 진지한 사람" />
+      </div>
+
+      <!-- 6. Hobby -->
+      <div class="field">
+        <div class="field-head"><span class="field-label">취미</span></div>
+        <input type="text" id="hobby" placeholder="예: 산책, 드라이브, 카페투어" />
+      </div>
+
+      <!-- 7. Date style -->
+      <div class="field">
+        <div class="field-head"><span class="field-label">좋아하는 데이트 스타일</span></div>
+        <input type="text" id="dateStyle" placeholder="예: 맛집 탐방, 전시회, 산책, 드라이브" />
+      </div>
+
+      <!-- 8. TMI -->
+      <div class="field">
+        <div class="field-head">
+          <span class="field-label">오늘의 TMI</span>
+          <span class="field-hint">대화 시작용 한 마디</span>
+        </div>
+        <input type="text" id="tmi" maxlength="60"
+               placeholder="예: 오늘 늦잠 자고 수업 들음 / 친구랑 커피 마셨음" />
+      </div>
+    </section>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span class="line"></span>
+      <span class="tag">PREVIEW</span>
+      <span class="line"></span>
+    </div>
+
+    <!-- Preview card -->
+    <section class="card-wrap">
+      <div class="card" id="card">
+        <div class="card-top">
+          <div class="card-animal" id="preview-animal">🐶</div>
+          <div class="card-nickname" id="preview-nickname">닉네임을 입력해주세요</div>
+          <div class="card-intro" id="preview-intro">"나를 한 문장으로 소개해주세요"</div>
+        </div>
+
+        <div class="card-section">
+          <div class="card-section-label">가치관 TOP 3</div>
+          <div id="preview-values">
+            <p class="empty-hint">가치관 TOP 3를 선택해주세요</p>
+          </div>
+        </div>
+
+        <div class="card-section">
+          <div class="row">
+            <span class="row-label">MBTI · 성격</span>
+            <span class="row-value empty" id="preview-mbti">아직 입력 전이에요</span>
+          </div>
+          <div class="row">
+            <span class="row-label">취미</span>
+            <span class="row-value empty" id="preview-hobby">아직 입력 전이에요</span>
+          </div>
+          <div class="row">
+            <span class="row-label">데이트 스타일</span>
+            <span class="row-value empty" id="preview-dateStyle">아직 입력 전이에요</span>
+          </div>
+        </div>
+
+        <!-- TMI: 카드 하단에 작은 글씨로 자연스럽게 -->
+        <div class="tmi-area" id="tmi-area" hidden>
+          <span class="tmi-tag">TMI</span>
+          <span class="tmi-text" id="preview-tmi"></span>
+        </div>
+
+        <div class="card-foot">
+          <p>ROTATION DATE</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA (안내 문구 + 저장 버튼) -->
+    <div class="cta-wrap">
+      <p class="cta-helper">
+        저장하기를 누르면 카드가 이미지로 저장돼요!
+      </p>
+      <button class="cta-btn" id="save-btn" type="button">프로필 카드 저장하기</button>
+    </div>
+  </main>
+
+  <script>
+    /* ---------------- Data ---------------- */
+    const ANIMALS = ['🐶','🐱','🐻','🦊','🐰','🐯','🦁','🐼','🐨','🐹','🦌','🐥'];
+    const VALUE_OPTIONS = [
+      { key: 'faith',       emoji: '⛪', label: '신앙' },
+      { key: 'looks',       emoji: '👀', label: '외적 요소' },
+      { key: 'vision',      emoji: '🚀', label: '비전' },
+      { key: 'money',       emoji: '💰', label: '경제관' },
+      { key: 'personality', emoji: '🧩', label: '성격' },
+    ];
+    const MEDALS = ['🥇', '🥈', '🥉'];
+    const RANK_LABELS = ['1순위', '2순위', '3순위'];
+
+    /* ---------------- State ---------------- */
+    const state = {
+      animal: '🐶',
+      nickname: '',
+      selectedValues: [], // ['faith','vision','personality']
+      mbti: '',
+      intro: '',
+      hobby: '',
+      dateStyle: '',
+      tmi: '',
+    };
+
+    /* ---------------- Helpers ---------------- */
+    const $ = (id) => document.getElementById(id);
+    const valueByKey = (k) => VALUE_OPTIONS.find(v => v.key === k);
+    const formatValue = (k) => { const v = valueByKey(k); return `${v.emoji} ${v.label}`; };
+
+    function showToast(msg) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2500);
+    }
+
+    /* ---------------- Render ---------------- */
+    function renderAnimals() {
+      const grid = $('animal-grid');
+      grid.innerHTML = '';
+      ANIMALS.forEach(a => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'animal-btn' + (state.animal === a ? ' selected' : '');
+        btn.textContent = a;
+        btn.setAttribute('aria-label', `동물 ${a}`);
+        btn.onclick = () => { state.animal = a; renderAnimals(); renderPreview(); };
+        grid.appendChild(btn);
+      });
+    }
+
+    function renderValues() {
+      const row = $('values-row');
+      row.innerHTML = '';
+      VALUE_OPTIONS.forEach(v => {
+        const rank = state.selectedValues.indexOf(v.key);
+        const selected = rank >= 0;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        let cls = 'value-btn';
+        if (selected) {
+          cls += ' selected';
+          if (rank === 0) cls += ' rank-1';
+        }
+        btn.className = cls;
+        btn.innerHTML = `${v.emoji} ${v.label}` +
+          (selected ? `<span class="rank-badge">${rank + 1}</span>` : '');
+        btn.onclick = () => {
+          const i = state.selectedValues.indexOf(v.key);
+          if (i >= 0) state.selectedValues.splice(i, 1);
+          else if (state.selectedValues.length < 3) state.selectedValues.push(v.key);
+          renderValues();
+          renderPreview();
+        };
+        row.appendChild(btn);
+      });
+      $('value-count').textContent = state.selectedValues.length;
+    }
+
+    function renderPreview() {
+      $('preview-animal').textContent = state.animal;
+      $('preview-nickname').textContent = state.nickname || '닉네임을 입력해주세요';
+      $('preview-intro').textContent = `"${state.intro || '나를 한 문장으로 소개해주세요'}"`;
+
+      const valuesEl = $('preview-values');
+      if (state.selectedValues.length === 3) {
+        const ul = document.createElement('ul');
+        ul.className = 'values-list';
+        state.selectedValues.forEach((k, i) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span class="medal">${MEDALS[i]}</span>
+            <span class="rank-text">${RANK_LABELS[i]}</span>
+            <span class="value-text">${formatValue(k)}</span>`;
+          ul.appendChild(li);
+        });
+        valuesEl.innerHTML = '';
+        valuesEl.appendChild(ul);
+      } else {
+        valuesEl.innerHTML = '<p class="empty-hint">가치관 TOP 3를 선택해주세요</p>';
+      }
+
+      setRow('mbti', state.mbti);
+      setRow('hobby', state.hobby);
+      setRow('dateStyle', state.dateStyle);
+
+      // TMI: 값이 있을 때만 노출
+      const tmiArea = $('tmi-area');
+      const tmiText = $('preview-tmi');
+      if (state.tmi.trim()) {
+        tmiText.textContent = state.tmi.trim();
+        tmiArea.hidden = false;
+      } else {
+        tmiArea.hidden = true;
+      }
+    }
+
+    function setRow(field, val) {
+      const el = $(`preview-${field}`);
+      if (val) {
+        el.textContent = val;
+        el.classList.remove('empty');
+      } else {
+        el.textContent = '아직 입력 전이에요';
+        el.classList.add('empty');
+      }
+    }
+
+    /* ---------------- Inputs ---------------- */
+    function bindInput(id, key, onUpdate) {
+      const el = $(id);
+      el.addEventListener('input', (e) => {
+        state[key] = e.target.value;
+        if (onUpdate) onUpdate();
+        renderPreview();
+      });
+    }
+
+    bindInput('nickname', 'nickname', () => {
+      $('nickname-count').textContent = state.nickname.length;
+    });
+    bindInput('mbti', 'mbti');
+    bindInput('intro', 'intro');
+    bindInput('hobby', 'hobby');
+    bindInput('dateStyle', 'dateStyle');
+    bindInput('tmi', 'tmi');
+
+    /* ---------------- Save ---------------- */
+    $('save-btn').addEventListener('click', async () => {
+      if (!state.nickname.trim()) { showToast('닉네임을 입력해주세요'); return; }
+      if (state.selectedValues.length !== 3) { showToast('가치관 TOP 3를 모두 선택해주세요'); return; }
+
+      const btn = $('save-btn');
+      btn.disabled = true;
+      btn.textContent = '저장 중...';
+
+      try {
+        // 1) PNG 다운로드
+        const card = $('card');
+        const dataUrl = await htmlToImage.toPng(card, {
+          pixelRatio: 2,
+          cacheBust: true,
+          backgroundColor: '#ffffff',
+        });
+        const link = document.createElement('a');
+        link.download = `${state.nickname || 'profile'}_프로필카드.png`;
+        link.href = dataUrl;
+        link.click();
+
+        // 2) 브라우저 저장 (localStorage — 백엔드 대체)
+        const profile = {
+          id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+          animalEmoji: state.animal,
+          nickname: state.nickname.trim(),
+          topValues: {
+            first:  formatValue(state.selectedValues[0]),
+            second: formatValue(state.selectedValues[1]),
+            third:  formatValue(state.selectedValues[2]),
+          },
+          mbti: state.mbti.trim(),
+          introSentence: state.intro.trim(),
+          hobby: state.hobby.trim(),
+          dateStyle: state.dateStyle.trim(),
+          tmi: state.tmi.trim(),
+          createdAt: new Date().toISOString(),
+        };
+        try {
+          const all = JSON.parse(localStorage.getItem('profiles') || '[]');
+          all.push(profile);
+          localStorage.setItem('profiles', JSON.stringify(all));
+        } catch (e) { /* localStorage 불가 환경은 그냥 통과 */ }
+
+        showToast('프로필 카드를 저장했어요!');
+      } catch (e) {
+        console.error(e);
+        showToast('저장 중 오류가 발생했어요');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '프로필 카드 저장하기';
+      }
+    });
+
+    /* ---------------- Init ---------------- */
+    renderAnimals();
+    renderValues();
+    renderPreview();
+  </script>
+</body>
+</html>
